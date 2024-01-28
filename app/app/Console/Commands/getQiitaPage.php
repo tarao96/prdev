@@ -3,11 +3,16 @@
 namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\DB;
 use App\Models\Article;
 use App\Models\Author;
+use App\Http\Controllers\CommonController;
 
 class getQiitaPage extends Command
 {
+    const PAGE = 1;
+    const QUERY = 'title:個人開発';
+
     /**
      * The name and signature of the console command.
      *
@@ -30,8 +35,15 @@ class getQiitaPage extends Command
     public function handle()
     {
         try {
-            $url = 'https://qiita.com/api/v2/items?page=1&query=title:個人開発';
-            $data = $this->getQiitaPage($url);
+            DB::beginTransaction();
+            // ヘッダーを設定
+            $headers = [
+                'Content-Type: application/json',
+                'Authoriztion: Bearer ' . config('external_api.qiita.api_key'),
+            ];
+            $url = 'https://qiita.com/api/v2/items?page='. self::PAGE .'&query='. self::QUERY;
+
+            $data = CommonController::execCurl($headers, $url);
             foreach ($data as $item) {
                 $is_article_exist = Article::where('url', $item['url'])->exists();
 
@@ -45,35 +57,10 @@ class getQiitaPage extends Command
                 $article->article_updated_at = $item['updated_at'];
                 $article->save();
             }
+            DB::commit();
         } catch (\Exception $e) {
             \Log::error($e->getMessage());
+            DB::rollback();
         }
-    }
-
-    public function getQiitaPage($url)
-    {
-        // curlのセッションを初期化
-        $ch = curl_init();
-
-        // ヘッダーを設定
-        $headers = [
-            'Authoriztion: Bearer ' . config('external_api.qiita.api_key'),
-        ];
-
-        // オプションを設定
-        $options = [
-            CURLOPT_URL => $url,
-            CURLOPT_RETURNTRANSFER => true,
-            CURLOPT_HTTPHEADER => $headers
-        ];
-        curl_setopt_array($ch, $options);
-
-        // 実行
-        $response = curl_exec($ch);
-        $json = json_decode($response, true); // 文字列からjsonへ変換
-
-        curl_close($ch);
-
-        return $json;
     }
 }

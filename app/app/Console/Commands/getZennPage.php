@@ -3,12 +3,15 @@
 namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\DB;
 use Goutte\Client;
 use Symfony\Component\HttpClient\HttpClient;
 use App\Models\Article;
 
 class getZennPage extends Command
 {
+    const PAGE = 1;
+
     /**
      * The name and signature of the console command.
      *
@@ -31,8 +34,9 @@ class getZennPage extends Command
     public function handle()
     {
         try {
+            DB::beginTransaction();
             $client = new Client(HttpClient::create(['timeout' => 60]));
-            $crawler = $client->request('GET', 'https://zenn.dev/topics/%E5%80%8B%E4%BA%BA%E9%96%8B%E7%99%BA?page=1');
+            $crawler = $client->request('GET', 'https://zenn.dev/topics/%E5%80%8B%E4%BA%BA%E9%96%8B%E7%99%BA?page='. self::PAGE);
             $crawler->filter('.ArticleList_itemContainer__UNI2Y')->each(function ($node) use ($crawler, $client) {
                 $title = $node->filter('.ArticleList_title__mmSkv')->text(); // タイトル
                 $relative_path = $node->filter('.ArticleList_link__4Igs4')->attr('href');
@@ -63,8 +67,10 @@ class getZennPage extends Command
                 $article->article_updated_at = $article_created_at;
                 $article->save();
             });
+            DB::commit();
         } catch (\Exception $e) {
             \Log::error($e->getMessage());
+            DB::rollback();
         }
     }
 }

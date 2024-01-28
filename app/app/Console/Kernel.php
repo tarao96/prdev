@@ -16,6 +16,9 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule)
     {
         // $schedule->command('inspire')->hourly();
+        $schedule->command('command:getNotePage')->everyThreeMinutes()->withoutOverlapping();
+        $schedule->command('command:getQiitaPage')->everyThreeMinutes()->withoutOverlapping();
+        $schedule->command('command:getZennPage')->everyThreeMinutes()->withoutOverlapping();
     }
 
     /**

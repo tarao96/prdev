@@ -3,12 +3,15 @@
 namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
-use Goutte\Client;
-use Symfony\Component\HttpClient\HttpClient;
+use Illuminate\Support\Facades\DB;
+use App\Http\Controllers\CommonController;
 use App\Models\Article;
 
 class getNotePage extends Command
 {
+    const PAGE_SIZE = 20;
+    const START = 0;
+
     /**
      * The name and signature of the console command.
      *
@@ -30,41 +33,32 @@ class getNotePage extends Command
      */
     public function handle()
     {
+        // 参考） https://note.com/ego_station/n/n85fcb635c0a9
         try {
-            $client = new Client(HttpClient::create(['timeout' => 60]));
-            $crawler = $client->request('GET', 'https://note.com/search?q=%E5%80%8B%E4%BA%BA%E9%96%8B%E7%99%BA&context=note&mode=search');
-            $crawler->filter('.m-largeNoteWrapper__card')->each(function ($node) use ($crawler, $client) {
-                $title = $node->filter('.m-noteBody__title')->text(); // タイトル
-                $relative_path = $node->filter('.m-largeNoteWrapper__link')->attr('href');
-                $link = 'https://note.com'.$relative_path; // リンク
-                $author_name = $node->filter('.o-largeNoteSummary__userName')->text(); // 著者名
-                $author_profile_image_url = $node->filter('.m-avatar__image')->attr('src'); // 著者プロフィール画像URL
+            DB::beginTransaction();
+            $headers = ['Content-Type: application/json'];
+            $index_url = "https://note.com/api/v3/searches?q=個人開発&size=". self::PAGE_SIZE ."&start=". self::START;
+            $pages = CommonController::execCurl($headers, $index_url);
+            foreach ($pages['data']['notes']['contents'] as $page) {
+                $show_url = "https://note.com/api/v3/notes/" . $page['key'];
+                $show = CommonController::execCurl($headers, $show_url);
+                $show_data = $show['data'];
 
-                $title_link = $crawler->selectLink($title)->link();
-                $crawler = $client->click($title_link);
-                $article_created_at = $crawler->filter('.o-noteContentHeader__date')->text(); // 公開日時
-                // dump($article_created_at);
-
-                // DBに保存
-                $is_article_exist = Article::where('url', $link)->exists();
-                if (!$is_article_exist) {
-                    // データを標準出力
-                    dump('新規記事');
-                    $line = 'タイトル: '.$title.",".'リンク: '.$link.",".'著者名: '.$author_name.",".'著者プロフィール画像URL: '.$author_profile_image_url;
-                    dump($line);
-                }
-                $article = $is_article_exist ? Article::where('url', $link)->first() : new Article();
-                $article->title = $title;
-                $article->url = $link;
-                $article->source = 'Note';
-                $article->author_name = $author_name;
-                $article->author_profile_image_url = $author_profile_image_url;
-                $article->article_created_at = $article_created_at;
-                $article->article_updated_at = $article_created_at;
+                $is_article_exist = Article::where('url', $show_data['note_url'])->exists();
+                $article = $is_article_exist ? Article::where('url', $show_data['note_url'])->first() : new Article();
+                $article->title = $show_data['name'];
+                $article->url = $show_data['note_url'];
+                $article->source = 'note';
+                $article->author_name = $show_data['user']['nickname'];
+                $article->author_profile_image_url = $show_data['user']['user_profile_image_path'];
+                $article->article_created_at = $show_data['created_at'];
+                $article->article_updated_at = $show_data['created_at'];
                 $article->save();
-            });
+            }
+            DB::commit();
         } catch (\Exception $e) {
             \Log::error($e->getMessage());
+            DB::rollback();
         }
     }
 }
