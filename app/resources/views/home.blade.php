@@ -77,6 +77,21 @@
             .description {
                 line-height: 1.8rem;
             }
+            .pagination {
+                display: flex;
+                gap: 10px;
+            }
+            .pagination a {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                border: 1px solid gray;
+                border-radius: 5px;
+                background-color: white;
+                width: 40px;
+                height: 40px;
+                font-size: 1.2rem;
+            }
         </style>
     </head>
     <body>
@@ -103,7 +118,40 @@
                     </div>
                 </a>
                 @endforeach
+                <div class="pagination">
+                    <a class="first-btn" href="{{ $articles->url(1) }}"><<</a>
+                    <a class="prev-btn" href="{{ $articles->previousPageUrl() }}"><</a>
+                    @if ($articles->currentPage() - 1 <= 0)
+                    <a class="page" href="{{ $articles->url($articles->currentPage()) }}" data-page="{{ $articles->currentPage() }}">{{ $articles->currentPage() }}</a>
+                    <a class="page" href="{{ $articles->url($articles->currentPage() + 1) }}" data-page="{{ $articles->currentPage() + 1 }}">{{ $articles->currentPage() + 1 }}</a>
+                    <a class="page" href="{{ $articles->url($articles->currentPage() + 2) }}" data-page="{{ $articles->currentPage() + 2 }}">{{ $articles->currentPage() + 2 }}</a>
+                    @endif
+
+                    @if ($articles->currentPage() - 1 > 0 && $articles->currentPage() + 1 <= $articles->lastPage())
+                    <a class="page" href="{{ $articles->url($articles->currentPage() - 1) }}" data-page="{{ $articles->currentPage() - 1 }}">{{ $articles->currentPage() - 1 }}</a>
+                    <a class="page" href="{{ $articles->url($articles->currentPage()) }}" data-page="{{ $articles->currentPage() }}">{{ $articles->currentPage() }}</a>
+                    <a class="page" href="{{ $articles->url($articles->currentPage() + 1) }}" data-page="{{ $articles->currentPage() + 1 }}">{{ $articles->currentPage() + 1 }}</a>
+                    @endif
+
+                    @if ($articles->currentPage() + 1 > $articles->lastPage())
+                    <a class="page" href="{{ $articles->url($articles->currentPage() - 2) }}" data-page="{{ $articles->currentPage() - 2 }}">{{ $articles->currentPage() - 2 }}</a>
+                    <a class="page" href="{{ $articles->url($articles->currentPage() - 1) }}" data-page="{{ $articles->currentPage() - 1 }}">{{ $articles->currentPage() - 1 }}</a>
+                    <a class="page" href="{{ $articles->url($articles->currentPage()) }}" data-page="{{ $articles->currentPage() }}">{{ $articles->currentPage() }}</a>
+                    @endif
+                    <a class="next-btn" href="{{ $articles->nextPageUrl() }}">></a>
+                    <a class="last-btn" href="{{ $articles->url($articles->lastPage()) }}">>></a>
+                </div>
             </div>
         </div>
+        <script>
+            const pageElements = document.querySelectorAll('.page');
+            pageElements.forEach((elem) => {
+                if (elem.dataset.page == {{ $articles->currentPage() }}) {
+                    elem.style.border = '1px solid #5271FF';
+                    elem.style.backgroundColor = '#5271FF';
+                    elem.style.color = 'white';
+                }
+            })
+        </script>
     </body>
 </html>
