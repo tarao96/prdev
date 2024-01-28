@@ -75,7 +75,7 @@
                 <h1>個人開発集</h1>
                 <p class="description">
                     このサイトはさまざまなサイトから<span class="strong">個人開発</span>に関する記事を集めた、個人開発のポータルサイトです。<br />
-                    なお、コンテンツは定期的に自動で収集され、当サイトは<span class="strong">半自動</span>で運営されております。<br />
+                    コンテンツは毎日定期的に自動で収集され、当サイトは<span class="strong">半自動</span>で運営されております。<br />
                     データ収集元はQiita, Zenn, note, 個人ブログなど多岐に渡ります。
                 </p>
             </div>
