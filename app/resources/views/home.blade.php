@@ -44,6 +44,7 @@
             }
             .card h2.title {
                 font-size: 1.2rem;
+                margin-bottom: 0;
             }
             .contents {
                 margin-top: 50px;
@@ -57,7 +58,16 @@
                 align-items: center;
                 gap: 0.7rem;
             }
+            .sub {
+                display: flex;
+                align-items: center;
+                gap: 20px;
+            }
             .source {
+                font-size: 0.8rem;
+                color: gray;
+            }
+            .published {
                 font-size: 0.8rem;
                 color: gray;
             }
@@ -87,7 +97,10 @@
                         <p class="author-name">{{ $article['author_name'] }}</p>
                     </div>
                     <h2 class="title">{{ $article['title'] }}</h2>
-                    <p class="source">収集元: {{ $article['source'] }}</p>
+                    <div class="sub">
+                        <p class="published">公開日: {{ explode(" ", $article['article_updated_at'])[0] }}</p>
+                        <p class="source">収集元: {{ $article['source'] }}</p>
+                    </div>
                 </a>
                 @endforeach
             </div>
