@@ -53,7 +53,7 @@
         <div class="card">
             <h1>ログイン</h1>
             {{ $errors }}
-            <form action="/login" method="POST" class="login-form">
+            <form action="{{ route('admin.auth.login') }}" method="POST" class="login-form">
                 @csrf
                 <div class="form-group">
                     <label for="email">メールアドレス</label>

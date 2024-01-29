@@ -8,5 +8,11 @@
 </head>
 <body>
     <h1>Hello, World!</h1>
+    <div class="logout-btn">
+        <form action="{{ route('admin.auth.logout') }}" method="POST">
+            @csrf
+            <button type="submit">ログアウト</button>
+        </form>
+    </div>
 </body>
 </html>
