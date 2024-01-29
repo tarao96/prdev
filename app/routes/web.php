@@ -13,4 +13,13 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+// ユーザー側
 Route::get('/', 'App\Http\Controllers\ArticleController@index')->name('home');
+
+// 管理側
+Route::get('/admin/login', function () {
+    return view('admin.login');
+})->name('admin.login');
+Route::get('/admin/articles', function () {
+    return view('admin.articles');
+})->name('admin.articles');
