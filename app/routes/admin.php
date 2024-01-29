@@ -6,5 +6,5 @@ Route::prefix('admin')->group(function () {
     Route::get('/login', function () { return view('admin.login'); })->name('admin.auth');
     Route::post('/login', 'App\Http\Controllers\Admin\AdminUserController@login')->name('admin.auth.login');
     Route::post('/logout', 'App\Http\Controllers\Admin\AdminUserController@logout')->name('admin.auth.logout');
-    Route::get('/articles', function () { return view('admin.articles'); })->name('admin.articles');
+    Route::get('/articles', 'App\Http\Controllers\Admin\ArticleController@index')->name('admin.articles');
 });
