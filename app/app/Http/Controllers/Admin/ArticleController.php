@@ -10,10 +10,20 @@ class ArticleController extends Controller
 {
     const PAGINATE = 20;
 
-    public function index()
+    public function index(Request $request)
     {
-        $articles = Article::orderBy('article_updated_at', 'desc')
-            ->paginate(self::PAGINATE);
+        $query = Article::orderBy('article_updated_at', 'desc');
+        if ($request->keyword) {
+            $query->where('title', 'like', '%' . $request->keyword . '%');
+        }
+        $articles = $query->paginate(self::PAGINATE);
         return view('admin.articles', ['articles' => $articles]);
+    }
+
+    public function delete($id)
+    {
+        $article = Article::find($id);
+        $article->delete();
+        return redirect()->route('admin.articles');
     }
 }

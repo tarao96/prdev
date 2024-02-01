@@ -66,11 +66,29 @@
         border-radius: 5px;
         background-color: #fff;
     }
+    .keyword-form {
+        width: 300px;
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+    }
+    .search-btn {
+        width: 50px;
+        padding: 5px 10px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        background-color: #fff;
+        cursor: pointer;
+    }
 </style>
 @endsection
 @section('content')
     <h1>記事一覧</h1>
     <p>現在のページ: {{ $articles->currentPage() }}</p>
+    <form action="{{ route('admin.articles') }}">
+        <input type="text" name="keyword" class="keyword-form" placeholder="検索ワードを入力">
+        <input type="submit" class="search-btn" value="検索" />
+    </form>
     <div class="articles">
         <table>
             <thead>
@@ -99,8 +117,9 @@
                     </td>
                     <td>
                         <div class="delete-btn">
-                            <form action="#" method="POST">
+                            <form action="{{ route('admin.articles.delete', ['id' => $article->id]) }}" method="POST">
                                 @csrf
+                                @method('DELETE')
                                 <button type="submit">削除</button>
                             </form>
                         </div>
