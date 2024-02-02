@@ -100,13 +100,13 @@
                 <h1>個人開発集</h1>
                 <p class="description">
                     このサイトはさまざまなサイトから<span class="strong">個人開発</span>に関する記事を集めた、個人開発のポータルサイトです。<br />
-                    コンテンツは毎日定期的に自動で収集され、当サイトは<span class="strong">半自動</span>で運営されております。<br />
+                    コンテンツは毎日定期的に自動収集され、当サイトは<span class="strong">半自動</span>で運営されております。<br />
                     データ収集元はQiita, Zenn, note, 個人ブログなど多岐に渡ります。
                 </p>
             </div>
             <div class="contents">
                 @foreach ($articles as $article)
-                <a href="{{ $article['url'] }}" class="card">
+                <a href="{{ $article['url'] }}" class="card" target="blank">
                     <div class="author">
                         <img src="{{ $article['author_profile_image_url'] }}" alt="サンプル">
                         <p class="author-name">{{ $article['author_name'] }}</p>

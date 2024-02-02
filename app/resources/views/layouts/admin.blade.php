@@ -49,8 +49,8 @@
     <nav class="nav">
         <p>管理画面</p>
         <ul>
-            <li><a href="{{ route('admin.articles') }}">記事一覧</a></li>
-            <li><a href="#">記事作成</a></li>
+            <li><a href="{{ route('admin.articles.index') }}">記事一覧</a></li>
+            <li><a href="{{ route('admin.articles.create') }}">記事作成</a></li>
             <form action="{{ route('admin.auth.logout') }}" method="POST">
                 @csrf
                 <button class="logout-btn" type="submit">ログアウト</button>

@@ -13,7 +13,7 @@ class AdminUserController extends Controller
         $credentials = $request->only('email', 'password');
         if (Auth::guard('admin_users')->attempt($credentials)) {
             $request->session()->regenerate(); // セッションIDを再生成
-            return redirect()->route('admin.articles');
+            return redirect()->route('admin.articles.index');
         }
         return back()->withErrors([
             'email' => 'メールアドレスかパスワードが間違っています。',

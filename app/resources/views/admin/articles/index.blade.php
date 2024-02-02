@@ -1,5 +1,5 @@
 @extends('layouts.admin')
-@section('title', '個人開発集')
+@section('title', '管理側記事一覧')
 @section('style')
 <style>
     .main {
@@ -85,7 +85,7 @@
 @section('content')
     <h1>記事一覧</h1>
     <p>現在のページ: {{ $articles->currentPage() }}</p>
-    <form action="{{ route('admin.articles') }}">
+    <form action="{{ route('admin.articles.index') }}">
         <input type="text" name="keyword" class="keyword-form" placeholder="検索ワードを入力">
         <input type="submit" class="search-btn" value="検索" />
     </form>
@@ -120,7 +120,7 @@
                             <form action="{{ route('admin.articles.delete', ['id' => $article->id]) }}" method="POST">
                                 @csrf
                                 @method('DELETE')
-                                <button type="submit">削除</button>
+                                <button type="submit" onclick='return confirm("本当に削除しますか？")'>削除</button>
                             </form>
                         </div>
                     </td>
