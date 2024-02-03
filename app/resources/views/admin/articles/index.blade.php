@@ -112,7 +112,7 @@
                     <td>{{ $article['source'] }}</td>
                     <td>
                         <div class="edit-btn">
-                            <a href="#">編集</a>
+                            <a href="{{ route('admin.articles.edit', ['id' => $article->id]) }}">編集</a>
                         </div>
                     </td>
                     <td>

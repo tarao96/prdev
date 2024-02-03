@@ -47,4 +47,36 @@ class ArticleController extends Controller
         $article->fill($data)->save();
         return redirect()->route('admin.articles.index');
     }
+
+    public function edit($id)
+    {
+        $article = Article::find($id);
+        $data = [
+            'id' => $article->id,
+            'title' => $article->title,
+            'url' => $article->url,
+            'source' => $article->source,
+            'author_name' => $article->author_name,
+            'author_profile_image_url' => $article->author_profile_image_url,
+            'article_created_at' => $article->article_created_at,
+            'article_updated_at' => $article->article_updated_at
+        ];
+        return view('admin.articles.edit', $data);
+    }
+
+    public function update(Request $request, $id)
+    {
+        $article = Article::find($id);
+        $data = [
+            'title' => $request->title,
+            'url' => $request->url,
+            'source' => $request->source,
+            'author_name' => $request->author_name,
+            'author_profile_image_url' => $request->author_profile_image_url,
+            'article_created_at' => $request->article_created_at,
+            'article_updated_at' => $request->article_updated_at
+        ];
+        $article->fill($data)->save();
+        return redirect()->route('admin.articles.edit', ['id' => $id]);
+    }
 }
