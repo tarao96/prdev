@@ -24,6 +24,7 @@ return new class extends Migration
             $table->dateTime('article_created_at')->comment('公開日時')->nullable();
             $table->datetime('article_updated_at')->comment('更新日時')->nullable();
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

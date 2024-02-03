@@ -44,8 +44,10 @@ class getNotePage extends Command
                 $show = CommonController::execCurl($headers, $show_url);
                 $show_data = $show['data'];
 
-                $is_article_exist = Article::where('url', $show_data['note_url'])->exists();
-                $article = $is_article_exist ? Article::where('url', $show_data['note_url'])->first() : new Article();
+                $article_with_trashed = Article::withTrashed()
+                    ->where('url', $show_data['note_url'])
+                    ->first();
+                $article = $article_with_trashed ? $article_with_trashed : new Article();
                 $article->title = $show_data['name'];
                 $article->url = $show_data['note_url'];
                 $article->source = 'note';
@@ -57,7 +59,7 @@ class getNotePage extends Command
             }
             DB::commit();
         } catch (\Exception $e) {
-            \Log::error($e->getMessage());
+            logger()->critical('file: ' . $e->getFile() . ' line: ' . $e->getLine() . ' message: ' . $e->getMessage());
             DB::rollback();
         }
     }

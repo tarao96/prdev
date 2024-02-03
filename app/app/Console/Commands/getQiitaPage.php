@@ -45,9 +45,11 @@ class getQiitaPage extends Command
 
             $data = CommonController::execCurl($headers, $url);
             foreach ($data as $item) {
-                $is_article_exist = Article::where('url', $item['url'])->exists();
+                $article_with_trashed = Article::withTrashed()
+                    ->where('url', $item['url'])
+                    ->first();
 
-                $article = $is_article_exist ? Article::where('url', $item['url'])->first() : new Article();
+                $article = $article_with_trashed ? $article_with_trashed : new Article();
                 $article->title = $item['title'];
                 $article->url = $item['url'];
                 $article->source = 'Qiita';
@@ -59,7 +61,7 @@ class getQiitaPage extends Command
             }
             DB::commit();
         } catch (\Exception $e) {
-            \Log::error($e->getMessage());
+            logger()->critical('file: ' . $e->getFile() . ' line: ' . $e->getLine() . ' message: ' . $e->getMessage());
             DB::rollback();
         }
     }
