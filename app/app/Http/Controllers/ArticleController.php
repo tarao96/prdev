@@ -8,10 +8,16 @@ use App\Models\Article;
 class ArticleController extends Controller
 {
     const PAGINATE = 20;
-    public function index()
+    public function index(Request $request)
     {
-        $articles = Article::orderBy('article_updated_at', 'desc')
-            ->paginate(self::PAGINATE);
-        return view('home', ['articles' => $articles]);
+        $query = Article::orderBy('article_updated_at', 'desc');
+        if ($request->keyword) {
+            $query->where('title', 'like', '%' . $request->keyword . '%');
+        }
+        $articles = $query->paginate(self::PAGINATE);
+        return view('home', [
+            'articles' => $articles,
+            'keyword' => $request->keyword
+        ]);
     }
 }

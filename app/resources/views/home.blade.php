@@ -92,6 +92,28 @@
                 height: 40px;
                 font-size: 1.2rem;
             }
+            .keyword-form {
+                width: 300px;
+                padding: 10px;
+                border: 1px solid #ccc;
+                border-radius: 5px;
+            }
+            .search-btn {
+                padding: 5px 10px;
+                border: 1px solid #ccc;
+                border-radius: 5px;
+                background-color: #fff;
+                cursor: pointer;
+            }
+            .search-title {
+                text-align: center;
+                margin: 0;
+            }
+            .form-group {
+                display: flex;
+                align-items: center;
+                gap: 5px;
+            }
         </style>
     </head>
     <body>
@@ -105,6 +127,16 @@
                 </p>
             </div>
             <div class="contents">
+                <p class="search-title">タイトル検索</p>
+                <div class="form-group">
+                    <form action="{{ route('home') }}">
+                        <input type="text" name="keyword" class="keyword-form" value="{{ $keyword }}" placeholder="検索ワードを入力">
+                        <input type="submit" class="search-btn" value="検索" />
+                    </form>
+                    <form action="{{ route('home') }}">
+                        <input type="submit" class="search-btn" value="クリア" />
+                    </form>
+                </div>
                 @foreach ($articles as $article)
                 <a href="{{ $article['url'] }}" class="card" target="blank">
                     <div class="author">
