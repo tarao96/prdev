@@ -74,13 +74,10 @@
             .strong {
                 color: #5271FF;
             }
-            .pc {
-                display: block;
-            }
-            .sp {
+            .description-sp {
                 display: none;
             }
-            .description {
+            .description-pc {
                 line-height: 1.8rem;
             }
             .pagination {
@@ -115,25 +112,34 @@
                 text-align: center;
                 margin: 0;
             }
-            .form-group {
+            .form-group-pc {
                 display: flex;
                 align-items: center;
                 gap: 5px;
+            }
+            .form-group-sp {
+                display: none;
             }
             @media screen and (max-width: 768px) {
                 .main {
                     width: 90%;
                 }
-                .pc {
+                .description-pc {
                     display: none;
                 }
-                .sp {
+                .description-sp {
                     display: block;
-                }
-                .description {
                     font-size: 0.8rem;
                 }
-                .form-group form {
+                .form-group-pc {
+                    display: none;
+                }
+                .form-group-sp {
+                    display: flex;
+                    align-items: center;
+                    gap: 5px;
+                }
+                .form-group-sp form {
                     display: flex;
                     flex-direction: column;
                     gap: 10px;
@@ -152,19 +158,19 @@
         <div class="main">
             <div class="fv">
                 <h1>個人開発集</h1>
-                <p class="description pc">
+                <p class="description-pc">
                     このサイトはさまざまなサイトから<span class="strong">個人開発</span>に関する記事を集めた、個人開発のポータルサイトです。<br />
                     コンテンツは毎日定期的に自動収集され、当サイトは<span class="strong">半自動</span>で運営されております。<br />
                     データ収集元はQiita, Zenn, note, 個人ブログなど多岐に渡ります。
                 </p>
-                <p class="description sp">
+                <p class="description-sp">
                     このサイトはさまざまなサイトから<span class="strong">個人開発</span>に関する記事を集めた、個人開発のポータルサイトです。<br />
                     データ収集元はQiita, Zenn, note, 個人ブログなど多岐に渡ります。
                 </p>
             </div>
             <div class="contents">
                 <p class="search-title">タイトル検索</p>
-                <div class="form-group pc">
+                <div class="form-group-pc">
                     <form action="{{ route('home') }}">
                         <input type="text" name="keyword" class="keyword-form" value="{{ $keyword }}" placeholder="検索ワードを入力">
                         <input type="submit" class="search-btn" value="検索" />
@@ -173,7 +179,7 @@
                         <input type="submit" class="search-btn" value="クリア" />
                     </form>
                 </div>
-                <div class="form-group sp">
+                <div class="form-group-sp">
                     <form action="{{ route('home') }}">
                         <input type="text" name="keyword" class="keyword-form" value="{{ $keyword }}" placeholder="検索ワードを入力">
                     </form>
